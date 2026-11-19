@@ -404,3 +404,15 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border: 0; bord
 .cursor-light { display: none; }
 .js .rv { filter: none; }
 .steps .g::after { display: none; }
+
+.mini-cases { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 640px; margin: 14px auto 0; }
+.mc { padding: 16px 18px; display: grid; grid-template-columns: 40px 1fr; gap: 4px 12px; align-items: center; }
+.mc-av { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; grid-row: span 1; }
+.mc h3 { font-size: 15px !important; color: #fff; }
+.mc span { font-size: 12px; color: #8e8e93; }
+.mc p { grid-column: 1 / -1; font-size: 13.5px !important; margin-top: 8px !important; }
+.mc p b { color: #fff; font-weight: 600; }
+.proof.solo { max-width: 640px; }
+.proof-note { font-size: 12px !important; }
+@media (max-width: 600px) { .mini-cases { grid-template-columns: 1fr; } }
+.proof.solo { max-width: 460px; } .proof.solo figure { padding: 6px; }
