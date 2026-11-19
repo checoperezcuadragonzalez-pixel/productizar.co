@@ -565,3 +565,15 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border: 0; bord
 .ph-card .ph-pain { font-size: 13.5px !important; } .ph-card .ph-do { font-size: 12.5px !important; }
 .ph-bar { left: 22px; right: 22px; }
 .hero .float-strip { margin: 0 auto clamp(28px,4vw,44px); }
+
+/* hero compacto: logo → botón en una pantalla */
+#landing .hero { padding-top: 84px !important; padding-bottom: 0 !important; }
+#landing .hero .wrap { gap: 0 !important; }
+.hero .float-strip { margin: 0 auto 22px !important; }
+.fs-track { padding: 10px 0; }
+#landing .hero-copy { gap: 12px !important; }
+.hero-car { margin-top: 26px !important; }
+.car-stage { height: 230px !important; }
+.car-nav { margin-top: 0 !important; }
+.hero-car .cta-row { margin-top: 18px !important; }
+@media (max-height: 760px) { .hero .float-strip { display: none; } }
