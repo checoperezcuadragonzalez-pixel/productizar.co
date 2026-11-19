@@ -596,3 +596,4 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border: 0; bord
 .car-btn { width: 30px; height: 30px; font-size: 13px; border-color: transparent; background: transparent; color: #6e6e73; }
 .car-btn:hover { color: #fff; background: rgba(255,255,255,.06); }
 @media (prefers-reduced-motion: reduce) { #landing .btn-gold, .final-cta .btn-gold { animation: none; } }
+#prueba.sec { padding-top: clamp(36px, 5vw, 56px) !important; } .sec { padding-top: clamp(48px, 6vw, 80px) !important; } .sec-h { margin-bottom: 24px !important; gap: 10px !important; } .final-cta { margin-top: clamp(40px, 5vw, 64px) !important; }
