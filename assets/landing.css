@@ -564,3 +564,4 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border: 0; bord
 .ph-card h3 { font-size: clamp(20px, 2.2vw, 24px) !important; }
 .ph-card .ph-pain { font-size: 13.5px !important; } .ph-card .ph-do { font-size: 12.5px !important; }
 .ph-bar { left: 22px; right: 22px; }
+.hero .float-strip { margin: 0 auto clamp(28px,4vw,44px); }
