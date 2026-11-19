@@ -258,7 +258,7 @@
       '<div class="wa-done"><span class="tag">Listo' + (first ? ", " + esc(first) : "") + "</span>" +
       '<h1 tabindex="-1">Tu plan está <em>casi listo</em></h1>' +
       '<p class="lead">Dale enviar al mensaje que ya está escrito y te lo mandamos por WhatsApp, personalizado con lo que contestaste.</p>' +
-      '<a class="btn btn-gold js-wa" target="_blank" rel="noopener" href="' + waLink() + '">Abrir WhatsApp <span class="arrow" aria-hidden="true">→</span></a>' +
+      '<a class="btn btn-gold js-wa" target="_blank" rel="noopener" href="' + waLink() + '">Enviar mensaje <span class="arrow" aria-hidden="true">→</span></a>' +
       '<span class="muted">Responde una persona del equipo, en minutos.</span></div>';
     var h1 = $rroot.querySelector("h1"); if (h1) h1.focus({ preventScroll: true });
   }
