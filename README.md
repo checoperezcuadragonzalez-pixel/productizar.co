@@ -1,6 +1,6 @@
 # Plan 10K · /productizar
 
-Landing + diagnóstico de 9 preguntas + 5 planes por fase (descargables en PDF). Sitio estático: no necesita build.
+Landing + diagnóstico de 9 preguntas + 5 planes interactivos por fase. Sitio estático: no necesita build.
 
 ## Estructura
 
@@ -9,9 +9,9 @@ index.html            landing, diagnóstico y resultado
 plan/fase-1.html … fase-5.html   el plan de cada fase (se abre como /plan/fase-3)
 assets/config.js      lo único que editas: link de Cal, webhook de leads, WhatsApp
 assets/app.js         preguntas, lógica de fase y resultado
-assets/plan.js        personaliza el plan con nombre, meta e ingreso (vienen en la URL)
 assets/styles.css     estilos de marca
-assets/plan.css       estilos del plan + formato PDF tamaño carta
+assets/plan2.css      estilos de los planes interactivos
+assets/plan2.js       interacciones del plan: aparición al hacer scroll, creencias, calculadora, semanas, checklist y CTA flotante
 vercel.json           URLs limpias (/plan/fase-3 sin .html)
 ```
 
@@ -33,7 +33,7 @@ Opción rápida con Google Sheets:
 function doPost(e) {
   var d = JSON.parse(e.postData.contents);
   var sh = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var cols = ["fecha","nombre","whatsapp","email","cuenta","fase","fase_nombre","meta_12m","vende","ingreso","frase","audiencia","canal","publicar","prioridad","utm_source","utm_campaign","utm_content","origen"];
+  var cols = ["fecha","nombre","whatsapp","email","cuenta","fase","fase_nombre","meta_12m","vende","ingreso","frase","audiencia","canal","publicar","prioridad","variante","temperatura","utm_source","utm_campaign","utm_content","origen"];
   if (sh.getLastRow() === 0) sh.appendRow(cols);
   sh.appendRow(cols.map(function (c) { return d[c] || ""; }));
   return ContentService.createTextOutput("ok");
@@ -49,9 +49,9 @@ También sirve un webhook de Make, Zapier o n8n (para mandar el plan por WhatsAp
 
 Pega el snippet en el `<head>` de `index.html`. El código ya dispara `Lead` (Meta) y `generate_lead` (GA4) cuando alguien termina el diagnóstico.
 
-## El PDF
+## Los planes
 
-En cada plan, el botón **Descargar PDF** abre la impresión del navegador → "Guardar como PDF". Ya está formateado a tamaño carta con fondo negro. Si sale sin fondo, activa "Gráficos de fondo" en las opciones de impresión.
+Cada plan (`/plan/fase-1` … `/plan/fase-5`) es una página interactiva: "¿te suena?" con respuesta, creencias que se voltean, la regla de la fase, calculadora de los $10K, 4 semanas desplegables, errores, checklist con barra y el cierre con el diagnóstico 1:1 gratis y WhatsApp. Se personaliza con el nombre (`?n=`) y el ingreso (`?m=`) que manda el diagnóstico. El botón de WhatsApp del cierre solo aparece si `whatsapp` está lleno en `config.js`.
 
 ## Cómo se asigna la fase
 
@@ -64,3 +64,13 @@ Se revisa en este orden y gana la primera que aplica (Producto va antes que El m
 - **Fase 05 · Lanzamiento:** todo lo demás (ya tiene producto, mensaje y motor).
 
 La lógica está en `phaseOf()` dentro de `assets/app.js`.
+
+## Temperatura del lead
+
+Cada lead llega al Sheet (columna `temperatura`) y al final del mensaje de WhatsApp como "Fase N · temperatura":
+
+- `caliente`: ya vende y le entran $3K+ al mes → el setter NO manda el plan, propone llamada.
+- `tibio`: ya vende → manda el plan + una pregunta para calificar.
+- `frio`: no vende o le entra menos de $1K → manda el plan y que se nutra.
+
+Actualiza el Apps Script del Sheet con la lista de columnas de arriba para que se guarde.

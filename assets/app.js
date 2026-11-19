@@ -6,7 +6,7 @@
     { key: "q1", title: "¿Qué vendes hoy con lo que sabes?", help: "Con esto sabemos qué parte del plan te sirve y cuál te sobra.", options: [
       ["nada", "Nada todavía, aunque me preguntan seguido"],
       ["medida", "Asesorías o servicio a la medida: cada cliente es distinto"],
-      ["curso", "Un curso o programa que lancé una vez"],
+      ["curso", "Un infoproducto que lancé una vez"],
       ["producto", "Un producto con nombre y precio que vendo de forma continua"]] },
     { key: "q2", title: "¿Cuánto te entra al mes con esto?", help: "Es el dato que más cambia tu plan. Sé honesto: esto no lo ve nadie más.", options: [
       ["m1", "Menos de $1,000 USD"], ["m2", "Entre $1,000 y $3,000 USD"], ["m3", "Entre $3,000 y $8,000 USD"], ["m4", "Más de $8,000 USD"]] },
@@ -70,7 +70,7 @@
 
   // ---------- estado ----------
   var KEY = "pz-plan10k";
-  var S = load() || { step: 0, a: {}, goal: "", name: "", wa: "", email: "", ig: "" };
+  var S = load() || { step: 0, a: {}, goal: "", name: "", wa: "", email: "", ig: "", variant: "" };
   var utm = captureUtm();
 
   function load() { try { return JSON.parse(sessionStorage.getItem(KEY)); } catch (e) { return null; } }
@@ -110,7 +110,7 @@
   function render() {
     if (S.step === 0) { show("landing"); return; }
     if (S.step >= 1 && S.step <= TOTAL) { show("quiz"); renderQuiz(); return; }
-    show("result"); renderResult();
+    show("result"); if (S.variant === "wa") renderWa(); else renderResult();
   }
 
   function bar(n) {
@@ -136,7 +136,7 @@
         '<div class="field"><label for="goal">Tu meta</label><input id="goal" name="goal" type="text" maxlength="160" autocomplete="off" placeholder="Ej. vender mi programa a 10 personas al mes sin perseguir en DM" value="' + esc(S.goal) + '"></div>' +
         '<div class="q-foot">' + BACK + '<button class="btn btn-gold" type="submit">Continuar <span class="arrow" aria-hidden="true">→</span></button></div></form>';
     } else {
-      html += '<form class="q-panel js-contact" novalidate><div class="q-head"><h1 tabindex="-1">¿A dónde te mandamos tu plan?</h1><p>Tu diagnóstico sale en la siguiente pantalla. El WhatsApp es para mandarte el PDF y resolverte dudas.</p></div>' +
+      html += '<form class="q-panel js-contact" novalidate><div class="q-head"><h1 tabindex="-1">¿A dónde te mandamos tu plan?</h1><p>Tu diagnóstico sale en la siguiente pantalla. El WhatsApp es para mandarte tu plan y resolverte dudas.</p></div>' +
         '<div class="fields">' +
         field("nm", "name", "Tu nombre", "text", "Nombre", "given-name") +
         field("wa", "wa", "WhatsApp", "tel", "+52 55 0000 0000", "tel") +
@@ -188,8 +188,7 @@
       : "Estás cerca. A este nivel la distancia ya no es volumen: es que el negocio funcione sin que tú empujes cada venta.";
     var diag = (first ? esc(first) + ", " : "") + (first ? P.diag.charAt(0).toLowerCase() + P.diag.slice(1) : P.diag);
     var chan = ((CH[a.q5] || "") + " " + (AUD[a.q4] || "")).trim();
-    var wa = CFG.whatsapp ? '<a class="btn btn-glass" target="_blank" rel="noopener" href="https://wa.me/' + encodeURIComponent(CFG.whatsapp) + "?text=" +
-      encodeURIComponent("Hola, hice el diagnóstico Plan 10K. Me salió la fase " + n + " (" + P.name + "). Quiero mi plan.") + '">Pedir mi plan por WhatsApp</a>' : "";
+    var wa = CFG.whatsapp ? '<a class="btn btn-glass js-wa" target="_blank" rel="noopener" href="' + waLink() + '">Pedir mi plan por WhatsApp</a>' : "";
 
     $rroot.innerHTML =
       '<div class="r-hero well">' +
@@ -208,12 +207,59 @@
       '<ol class="moves">' + P.moves.map(function (m) { return '<li class="glass"><p>' + esc(m) + "</p></li>"; }).join("") + "</ol>" +
       '<div class="plan-cta well" style="margin-top:20px">' +
         '<div class="copy"><span class="tag">Tu plan completo</span><h2>El mes de la fase 0' + n + ", semana por semana</h2>" +
-        "<p>Diagnóstico, la regla de tu fase, la matemática de tus 10K, las cuatro semanas con lo que sale de cada una, la plantilla para llenar y cómo sabes que ya pasaste de fase. Lo abres y lo descargas en PDF.</p></div>" +
+        "<p>Diagnóstico, la regla de tu fase, la matemática de tus 10K, las cuatro semanas con lo que sale de cada una, la plantilla para llenar y cómo sabes que ya pasaste de fase. Lo abres y lo recorres a tu ritmo.</p></div>" +
         '<div class="acts"><a class="btn btn-gold" href="' + planUrl(n) + '">Abrir mi plan <span class="arrow" aria-hidden="true">→</span></a>' + wa +
-        '<a class="btn btn-glass" target="_blank" rel="noopener" href="' + esc(CFG.calUrl || "#") + '">Agendar diagnóstico 1:1</a>' +
+        '<a class="btn btn-glass" target="_blank" rel="noopener" href="' + esc(CFG.calUrl || "#") + '">Agendar mi diagnóstico gratis</a>' +
         '<span class="muted" style="text-align:center">El 1:1 es solo si ya vendes algo.<br>Cupo de 5 a 8 personas a la vez.</span></div>' +
       "</div>" +
       '<div class="r-sub"><button class="btn btn-quiet js-restart" type="button">Volver a hacer el diagnóstico</button><span class="muted">Fase calculada con tus 7 respuestas.</span></div>';
+    var h1 = $rroot.querySelector("h1"); if (h1) h1.focus({ preventScroll: true });
+  }
+
+  // ---------- temperatura del lead ----------
+  // caliente: ya vende algo y le entran $3K+   -> el setter propone llamada, no manda el plan
+  // tibio: ya vende algo                        -> plan + pregunta de calificación
+  // frio: no vende o le entra menos de $1K      -> plan y que se nutra
+  function tempOf(a) {
+    var vende = a.q1 && a.q1 !== "nada";
+    if (vende && (a.q2 === "m3" || a.q2 === "m4")) return "caliente";
+    if (vende && a.q2 !== "m1") return "tibio";
+    return "frio";
+  }
+
+  // ---------- A/B tras el formulario ----------
+  function pickVariant() {
+    var forced = new URLSearchParams(location.search).get("v");
+    if (!CFG.whatsapp) return "plan";                       // sin WhatsApp no hay a dónde mandarlo
+    if (forced === "plan" || forced === "wa") return forced;
+    if (CFG.ab === false) return "plan";
+    return Math.random() < 0.5 ? "plan" : "wa";
+  }
+  function label(k) {
+    for (var i = 0; i < QS.length; i++) if (QS[i].key === k) {
+      for (var j = 0; j < QS[i].options.length; j++) if (QS[i].options[j][0] === S.a[k]) return QS[i].options[j][1];
+    }
+    return "";
+  }
+  // El mensaje lleva lo que acaba de contestar: el setter responde sin pedirle que repita nada.
+  function waLink() {
+    var first = (S.name || "").trim().split(" ")[0];
+    var lines = [(first ? "Hola, soy " + first + ". " : "Hola. ") + (CFG.whatsappMsg || "Ya llené el formulario del Plan 10K, quiero mis recursos.")];
+    if (label("q1")) lines.push("· Hoy vendo: " + label("q1"));
+    if (label("q2")) lines.push("· Me entra al mes: " + label("q2"));
+    if (label("q7")) lines.push("· Lo que quiero arreglar: " + label("q7"));
+    if ((S.goal || "").trim()) lines.push("· Mi meta a 12 meses: " + S.goal.trim());
+    lines.push("· Fase " + phaseOf(S.a) + " · " + tempOf(S.a));
+    return "https://wa.me/" + encodeURIComponent(CFG.whatsapp) + "?text=" + encodeURIComponent(lines.join("\n"));
+  }
+  function renderWa() {
+    var first = (S.name || "").trim().split(" ")[0];
+    $rroot.innerHTML =
+      '<div class="wa-done"><span class="tag">Listo' + (first ? ", " + esc(first) : "") + "</span>" +
+      '<h1 tabindex="-1">Tu plan está <em>casi listo</em></h1>' +
+      '<p class="lead">Dale enviar al mensaje que ya está escrito y te lo mandamos por WhatsApp, personalizado con lo que contestaste.</p>' +
+      '<a class="btn btn-gold js-wa" target="_blank" rel="noopener" href="' + waLink() + '">Abrir WhatsApp <span class="arrow" aria-hidden="true">→</span></a>' +
+      '<span class="muted">Responde una persona del equipo, en minutos.</span></div>';
     var h1 = $rroot.querySelector("h1"); if (h1) h1.focus({ preventScroll: true });
   }
 
@@ -223,7 +269,7 @@
       fecha: new Date().toISOString(), nombre: S.name.trim(), whatsapp: S.wa.trim(), email: S.email.trim(), cuenta: S.ig.trim(),
       fase: n, fase_nombre: PH[n - 1].name, meta_12m: S.goal.trim(),
       vende: S.a.q1, ingreso: S.a.q2, frase: S.a.q3, audiencia: S.a.q4, canal: S.a.q5, publicar: S.a.q6, prioridad: S.a.q7,
-      origen: location.href
+      variante: S.variant, temperatura: tempOf(S.a), origen: location.href
     }, utm);
     Object.keys(payload).forEach(function (k) {
       var v = payload[k];
@@ -234,16 +280,17 @@
         fetch(CFG.leadWebhook, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload), keepalive: true });
       } catch (e) {}
     }
-    if (window.fbq) try { window.fbq("track", "Lead", { content_name: "Plan 10K fase " + n }); } catch (e) {}
-    if (window.gtag) try { window.gtag("event", "generate_lead", { phase: n }); } catch (e) {}
+    if (window.fbq) try { window.fbq("track", "Lead", { content_name: "Plan 10K fase " + n, variant: S.variant }); } catch (e) {}
+    if (window.gtag) try { window.gtag("event", "generate_lead", { phase: n, variant: S.variant }); } catch (e) {}
   }
 
   // ---------- eventos ----------
   document.addEventListener("click", function (e) {
     var t = e.target.closest("button, a"); if (!t) return;
+    if (t.classList.contains("js-wa")) { if (window.fbq) try { window.fbq("track", "Contact"); } catch (x) {} if (window.gtag) try { window.gtag("event", "whatsapp_click", { variant: "wa" }); } catch (x) {} return; }
     if (t.classList.contains("js-start")) { S.step = S.step > 0 && S.step <= TOTAL ? S.step : 1; if (S.step > TOTAL) S.step = 1; go(S.step); }
     else if (t.classList.contains("js-back")) go(S.step - 1);
-    else if (t.classList.contains("js-restart")) { S = { step: 1, a: {}, goal: "", name: S.name, wa: S.wa, email: S.email, ig: S.ig }; go(1); }
+    else if (t.classList.contains("js-restart")) { S = { step: 1, a: {}, goal: "", name: S.name, wa: S.wa, email: S.email, ig: S.ig, variant: "" }; go(1); }
     else if (t.classList.contains("opt")) pick(t.dataset.k, t.dataset.v);
   });
 
@@ -262,7 +309,7 @@
       else if (S.wa.replace(/\D/g, "").length < 8) msg = "Revisa tu WhatsApp: incluye lada.";
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(S.email.trim())) msg = "Revisa tu email.";
       if (msg) { err.textContent = msg; return; }
-      sendLead(); go(TOTAL + 1);
+      S.variant = pickVariant(); save(); sendLead(); go(TOTAL + 1);
     }
   });
 
@@ -272,6 +319,17 @@
     var i = parseInt(e.key, 10), Q = QS[S.step - 1];
     if (i >= 1 && i <= Q.options.length) pick(Q.key, Q.options[i - 1][0]);
   });
+
+  // ---------- mini VSL del hero (opcional) ----------
+  (function () {
+    var box = document.getElementById("vsl"), u = (CFG.videoUrl || "").trim();
+    if (!box || !u) return;
+    var yt = u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/), vm = u.match(/vimeo\.com\/(\d+)/);
+    if (yt) box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + yt[1] + '?rel=0&modestbranding=1" title="Video" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+    else if (vm) box.innerHTML = '<iframe src="https://player.vimeo.com/video/' + vm[1] + '" title="Video" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>';
+    else box.innerHTML = '<video src="' + esc(u) + '" controls playsinline preload="metadata"></video>';
+    box.hidden = false;
+  })();
 
   render();
 })();
