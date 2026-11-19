@@ -87,12 +87,12 @@
   cards.forEach(function () { dots.appendChild(document.createElement("i")); });
   var ds = [].slice.call(dots.children);
   function render() {
-    var w = Math.min(car.offsetWidth, 900);
+    var w = car.offsetWidth;
     cards.forEach(function (c, i) {
       var d = ((i - cur) % n + n) % n; if (d > n / 2) d -= n;
-      var x = d * Math.min(w * .42, 380), s = 1 - Math.min(Math.abs(d), 2) * .12;
+      var x = d * Math.min(w * .36, 470), s = 1 - Math.min(Math.abs(d), 2) * .12;
       c.style.transform = "translateX(" + x + "px) scale(" + s + ")";
-      c.style.opacity = Math.abs(d) > 1 ? 0 : (d === 0 ? 1 : .35);
+      c.style.opacity = Math.abs(d) > 1 ? 0 : (d === 0 ? 1 : .45);
       c.style.zIndex = 10 - Math.abs(d);
       c.style.pointerEvents = Math.abs(d) > 1 ? "none" : "auto";
       c.classList.toggle("on", d === 0);
