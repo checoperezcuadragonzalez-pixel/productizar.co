@@ -90,7 +90,7 @@
     var w = car.offsetWidth;
     cards.forEach(function (c, i) {
       var d = ((i - cur) % n + n) % n; if (d > n / 2) d -= n;
-      var x = d * Math.min(w * .3, 400), s = 1 - Math.min(Math.abs(d), 2) * .12;
+      var x = d * Math.min(w * .24, 320), s = 1 - Math.min(Math.abs(d), 2) * .12;
       c.style.transform = "translateX(" + x + "px) scale(" + s + ")";
       c.style.opacity = Math.abs(d) > 1 ? 0 : (d === 0 ? 1 : .45);
       c.style.zIndex = 10 - Math.abs(d);

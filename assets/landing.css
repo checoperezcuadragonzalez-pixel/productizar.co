@@ -584,3 +584,4 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border: 0; bord
 .ph-card .ph-pain { font-size: 13px !important; } .ph-card .ph-do { font-size: 12px !important; }
 .ph-bar { left: 20px; right: 20px; }
 .car-stage { height: 196px !important; } .car-nav { margin-top: 10px !important; }
+.ph-card { width: min(290px, 74vw); margin-left: calc(min(290px, 74vw) / -2); } .ph-card .ph-do { max-width: none; }
