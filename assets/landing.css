@@ -585,3 +585,14 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border: 0; bord
 .ph-bar { left: 20px; right: 20px; }
 .car-stage { height: 196px !important; } .car-nav { margin-top: 10px !important; }
 .ph-card { width: min(290px, 74vw); margin-left: calc(min(290px, 74vw) / -2); } .ph-card .ph-do { max-width: none; }
+/* un solo botón obvio */
+#landing .btn-gold, .final-cta .btn-gold { min-height: 54px !important; padding: 0 30px !important; font-size: 16px !important; font-weight: 600;
+  border: 1px solid rgba(250,204,21,.55) !important; color: #fff;
+  background: linear-gradient(180deg, rgba(250,204,21,.22), rgba(250,204,21,.06)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,243,196,.35), 0 0 0 0 rgba(250,204,21,.35), 0 14px 36px -12px rgba(250,204,21,.55) !important;
+  animation: ctaPulse 2.8s cubic-bezier(.32,.72,0,1) infinite; }
+@keyframes ctaPulse { 0% { box-shadow: inset 0 1px 0 rgba(255,243,196,.35), 0 0 0 0 rgba(250,204,21,.35), 0 14px 36px -12px rgba(250,204,21,.55); } 70%,100% { box-shadow: inset 0 1px 0 rgba(255,243,196,.35), 0 0 0 14px rgba(250,204,21,0), 0 14px 36px -12px rgba(250,204,21,.55); } }
+#landing .btn-gold:hover { transform: translateY(-2px); background: linear-gradient(180deg, rgba(250,204,21,.32), rgba(250,204,21,.1)) !important; }
+.car-btn { width: 30px; height: 30px; font-size: 13px; border-color: transparent; background: transparent; color: #6e6e73; }
+.car-btn:hover { color: #fff; background: rgba(255,255,255,.06); }
+@media (prefers-reduced-motion: reduce) { #landing .btn-gold, .final-cta .btn-gold { animation: none; } }
