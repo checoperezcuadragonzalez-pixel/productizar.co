@@ -78,3 +78,34 @@
     if (Math.abs(tx - x) > .4 || Math.abs(ty - y) > .4) requestAnimationFrame(tick); else ticking = false;
   }
 })();
+
+/* ---- carrusel de fases ---- */
+(function () {
+  var car = document.getElementById("car"); if (!car) return;
+  var cards = [].slice.call(car.querySelectorAll(".ph-card")), n = cards.length, cur = 0, t;
+  var dots = car.querySelector(".car-dots");
+  cards.forEach(function () { dots.appendChild(document.createElement("i")); });
+  var ds = [].slice.call(dots.children);
+  function render() {
+    var w = Math.min(car.offsetWidth, 900);
+    cards.forEach(function (c, i) {
+      var d = ((i - cur) % n + n) % n; if (d > n / 2) d -= n;
+      var x = d * Math.min(w * .42, 380), s = 1 - Math.min(Math.abs(d), 2) * .12;
+      c.style.transform = "translateX(" + x + "px) scale(" + s + ")";
+      c.style.opacity = Math.abs(d) > 1 ? 0 : (d === 0 ? 1 : .35);
+      c.style.zIndex = 10 - Math.abs(d);
+      c.style.pointerEvents = Math.abs(d) > 1 ? "none" : "auto";
+      c.classList.toggle("on", d === 0);
+    });
+    ds.forEach(function (x, i) { x.classList.toggle("on", i === cur); });
+  }
+  function go(k) { cur = (k + n) % n; render(); restart(); }
+  function restart() { clearInterval(t); t = setInterval(function () { go(cur + 1); }, 3800); }
+  car.querySelectorAll(".car-btn").forEach(function (b) { b.addEventListener("click", function () { go(cur + +b.dataset.d); }); });
+  cards.forEach(function (c, i) { c.addEventListener("click", function () { go(i); }); });
+  var sx = null;
+  car.addEventListener("pointerdown", function (e) { sx = e.clientX; });
+  car.addEventListener("pointerup", function (e) { if (sx !== null && Math.abs(e.clientX - sx) > 40) go(cur + (e.clientX < sx ? 1 : -1)); sx = null; });
+  addEventListener("resize", render);
+  render(); restart();
+})();

@@ -41,10 +41,6 @@
         <div class="cta-row">
           <button class="btn btn-gold js-start" type="button">Quiero mi plan <span class="arrow" aria-hidden="true">→</span></button>
         </div>
-        <div class="loop" aria-hidden="true"><div class="loop-track">
-          <span>Avatar</span><span>Oferta</span><span>Identidad de marca</span><span>Contenido</span><span>Producto</span><span>Lanzamiento</span><span>Tu plan de 30 días</span>
-          <span>Avatar</span><span>Oferta</span><span>Identidad de marca</span><span>Contenido</span><span>Producto</span><span>Lanzamiento</span><span>Tu plan de 30 días</span>
-        </div></div>
       </div>
 
       
@@ -56,37 +52,15 @@
   <section class="sec" id="prueba">
     <div class="wrap">
       <div class="sec-h rv"><span class="pill">Resultados</span><h2>Lo que ya hicimos</h2></div>
-      <div class="cases-list">
-        <article class="case g rv">
-          <div class="case-img" style="background-image:url(/assets/studio.webp);background-position:left top"></div>
-          <div class="case-body">
-            <div class="case-top"><span class="who">CHECO</span><span class="tag">Marca personal</span></div>
-            <h3>+4M de vistas en YouTube</h3>
-            <p class="flow">+4M VISITAS → +120 TICKETS VENDIDOS</p>
-            <div class="case-stats"><div><span>Vistas</span><b>+4M</b></div><div><span>Tickets</span><b>+120</b></div></div>
-            <span class="foot">Canal propio</span>
-          </div>
-        </article>
-        <article class="case g rv">
-          <div class="case-img" style="background-image:url(/assets/santuki-v1.webp);background-position:center"></div>
-          <div class="case-body">
-            <div class="case-top"><span class="who">SANTUKI</span><span class="tag">Coach fitness</span></div>
-            <h3>964K vistas en un canal nuevo</h3>
-            <p class="flow">964K VISITAS → 39 PERSONAS PAGANDO</p>
-            <div class="case-stats"><div><span>Visitas</span><b>964K</b></div><div><span>Pagando</span><b>39</b></div></div>
-            <span class="foot">6 meses</span>
-          </div>
-        </article>
-        <article class="case g rv">
-          <div class="case-img" style="background-image:url(/assets/juanma-avatar.webp);background-position:center;background-size:60%;background-repeat:no-repeat;background-color:#0b0b0b"></div>
-          <div class="case-body">
-            <div class="case-top"><span class="who">JUANMA ARBELÁEZ</span><span class="tag">Health coach</span></div>
-            <h3>515K seguidores, ahora con producto</h3>
-            <p class="flow">515K SEGUIDORES → SU PRIMER INFOPRODUCTO</p>
-            <div class="case-stats"><div><span>Seguidores</span><b>515K</b></div><div><span>Estado</span><b>Arrancando</b></div></div>
-            <span class="foot">Cliente nuevo</span>
-          </div>
-        </article>
+      <div class="res rv">
+        <div class="res-row"><img class="res-av" src="/assets/checo-avatar.webp" alt=""><div class="res-who"><b>Checo</b><span>Marca personal</span></div><div class="res-n"><b>+4M</b><span>vistas · +120 tickets</span></div></div>
+        <div class="res-row"><span class="res-av ini">S</span><div class="res-who"><b>Santuki</b><span>Coach fitness · Resilient Club</span></div><div class="res-n"><b>964K</b><span>vistas · 39 pagando</span></div></div>
+        <div class="res-row"><img class="res-av" src="/assets/juanma-avatar.webp" alt=""><div class="res-who"><b>Juanma Arbeláez</b><span>Health coach · cliente nuevo</span></div><div class="res-n"><b>515K</b><span>seguidores</span></div></div>
+      </div>
+      <div class="shots rv">
+        <figure><img src="/assets/studio.webp" alt="YouTube Studio de Checo" loading="lazy"><figcaption>Checo · YouTube Studio</figcaption></figure>
+        <figure><img src="/assets/santuki-studio.webp" alt="YouTube Studio de Santuki" loading="lazy"><figcaption>Santuki · canal nuevo</figcaption></figure>
+        <figure><img src="/assets/juanma.webp" alt="Instagram de Juanma" loading="lazy"><figcaption>Juanma · Instagram</figcaption></figure>
       </div>
     </div>
   </section>
@@ -94,12 +68,15 @@
   <section class="sec" id="como">
     <div class="wrap">
       <div class="sec-h rv"><span class="pill">El método</span><h2>Cinco fases, una a la vez</h2><p>Te decimos en cuál estás y qué mover primero.</p></div>
-      <div class="bento">
-        <div class="g hov s3 rv"><div class="top"><span class="ph-n">01</span></div><div><h3>Avatar y oferta</h3><p>Sabes algo que vale y no tienes nada que se compre.</p></div></div>
-        <div class="g hov s3 rv" style="--d:80ms"><div class="top"><span class="ph-n">02</span></div><div><h3>Identidad</h3><p>Tienes qué vender, pero nadie entiende por qué tú.</p></div></div>
-        <div class="g hov s2 rv"><div class="top"><span class="ph-n">03</span></div><div><h3>El motor</h3><p>Tienes producto, pero tu contenido no lo vende.</p></div></div>
-        <div class="g hov s2 rv" style="--d:80ms"><div class="top"><span class="ph-n">04</span></div><div><h3>Producto</h3><p>Vendes, pero todo depende de tus horas.</p></div></div>
-        <div class="g hov hot s2 rv" style="--d:160ms"><div class="top"><span class="ph-n">05</span></div><div><h3>Lanzamiento</h3><p>Tienes todo, y lanzas a ver qué pasa.</p></div></div>
+      <div class="car rv" id="car">
+        <div class="car-stage">
+          <article class="ph-card g" data-i="0"><span class="ph-k">Fase 01</span><h3>Avatar y oferta</h3><p>Sabes algo que vale y no tienes nada que se compre.</p></article>
+          <article class="ph-card g" data-i="1"><span class="ph-k">Fase 02</span><h3>Identidad de marca</h3><p>Tienes qué vender, pero nadie entiende por qué tú.</p></article>
+          <article class="ph-card g" data-i="2"><span class="ph-k">Fase 03</span><h3>Contenido</h3><p>Tienes producto, pero tu contenido no lo vende.</p></article>
+          <article class="ph-card g" data-i="3"><span class="ph-k">Fase 04</span><h3>Producto</h3><p>Vendes, pero todo depende de tus horas.</p></article>
+          <article class="ph-card g" data-i="4"><span class="ph-k">Fase 05</span><h3>Lanzamiento</h3><p>Tienes todo, y lanzas a ver qué pasa.</p></article>
+        </div>
+        <div class="car-nav"><button type="button" class="car-btn" data-d="-1" aria-label="Anterior">←</button><div class="car-dots"></div><button type="button" class="car-btn" data-d="1" aria-label="Siguiente">→</button></div>
       </div>
     </div>
   </section>
