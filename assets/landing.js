@@ -109,3 +109,41 @@
   addEventListener("resize", render);
   render(); restart();
 })();
+
+/* ---- palabras del hero, contadores, inclinación ---- */
+(function () {
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var h = document.querySelector(".hero h1");
+  if (h && !reduce) {
+    var i = 0;
+    [].slice.call(h.childNodes).forEach(function (n) {
+      if (n.nodeType === 3) {
+        var f = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(function (p) {
+          if (!p.trim()) { f.appendChild(document.createTextNode(p)); return; }
+          var sp = document.createElement("span"); sp.className = "w"; sp.textContent = p; sp.style.animationDelay = (i++ * 60) + "ms"; f.appendChild(sp);
+        });
+        h.replaceChild(f, n);
+      } else { n.classList.add("w"); n.style.animationDelay = (i++ * 60) + "ms"; }
+    });
+  }
+  var nums = document.querySelectorAll("[data-n]");
+  if ("IntersectionObserver" in window && !reduce) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return; io.unobserve(e.target);
+        var el = e.target, to = +el.dataset.n, s = el.dataset.s || "", p = el.dataset.p || "", t0 = performance.now();
+        (function step(t) { var k = Math.min(1, (t - t0) / 1400), v = 1 - Math.pow(1 - k, 3);
+          el.textContent = p + Math.round(to * v) + s; if (k < 1) requestAnimationFrame(step); })(t0);
+      });
+    }, { threshold: .6 });
+    nums.forEach(function (n) { io.observe(n); });
+  }
+  if (matchMedia("(hover: hover)").matches && !reduce) {
+    document.querySelectorAll(".cc").forEach(function (c) {
+      c.addEventListener("pointermove", function (e) { var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        c.style.transform = "perspective(900px) rotateX(" + (-y * 5) + "deg) rotateY(" + (x * 6) + "deg) translateY(-3px)"; });
+      c.addEventListener("pointerleave", function () { c.style.transform = ""; });
+    });
+  }
+})();
