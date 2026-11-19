@@ -577,3 +577,10 @@ input[type=range]::-moz-range-thumb { width: 28px; height: 28px; border: 0; bord
 .car-nav { margin-top: 0 !important; }
 .hero-car .cta-row { margin-top: 18px !important; }
 @media (max-height: 760px) { .hero .float-strip { display: none; } }
+.car-stage { height: 176px !important; }
+.ph-card { height: auto; min-height: 0; top: 50%; transform-origin: center; padding: 18px 20px 20px; justify-content: flex-start; gap: 6px; border-radius: 18px; translate: 0 -50%; }
+.ph-card .ph-k { position: static; margin-bottom: 4px; }
+.ph-card h3 { font-size: 19px !important; }
+.ph-card .ph-pain { font-size: 13px !important; } .ph-card .ph-do { font-size: 12px !important; }
+.ph-bar { left: 20px; right: 20px; }
+.car-stage { height: 196px !important; } .car-nav { margin-top: 10px !important; }
