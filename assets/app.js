@@ -73,8 +73,8 @@
   var S = load() || { step: 0, a: {}, goal: "", name: "", wa: "", email: "", ig: "", variant: "" };
   var utm = captureUtm();
 
-  function load() { try { return JSON.parse(sessionStorage.getItem(KEY)); } catch (e) { return null; } }
-  function save() { try { sessionStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  function load() { try { sessionStorage.removeItem(KEY); localStorage.removeItem(KEY); } catch (e) {} return null; }
+  function save() {}
   function captureUtm() {
     var p = new URLSearchParams(location.search), o = {};
     ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid"].forEach(function (k) { if (p.get(k)) o[k] = p.get(k); });
@@ -212,7 +212,7 @@
         '<a class="btn btn-glass" target="_blank" rel="noopener" href="' + esc(CFG.calUrl || "#") + '">Agendar mi diagnóstico gratis</a>' +
         '<span class="muted" style="text-align:center">El 1:1 es solo si ya vendes algo.<br>Cupo de 5 a 8 personas a la vez.</span></div>' +
       "</div>" +
-      '<div class="r-sub"><button class="btn btn-quiet js-restart" type="button">Volver a hacer el diagnóstico</button><span class="muted">Fase calculada con tus 7 respuestas.</span></div>';
+      '<div class="r-sub"><button class="btn btn-quiet js-home" type="button">← Regresar al inicio</button><button class="btn btn-quiet js-restart" type="button">Volver a hacer el diagnóstico</button><span class="muted">Fase calculada con tus 7 respuestas.</span></div>';
     var h1 = $rroot.querySelector("h1"); if (h1) h1.focus({ preventScroll: true });
   }
 
@@ -259,7 +259,7 @@
       '<h1 tabindex="-1">Tu plan está <em>casi listo</em></h1>' +
       '<p class="lead">Dale enviar al mensaje que ya está escrito y te lo mandamos por WhatsApp, personalizado con lo que contestaste.</p>' +
       '<a class="btn btn-gold js-wa" target="_blank" rel="noopener" href="' + waLink() + '">Enviar mensaje <span class="arrow" aria-hidden="true">→</span></a>' +
-      '<span class="muted">Responde una persona del equipo, en minutos.</span></div>';
+      '<span class="muted">Responde una persona del equipo, en minutos.</span><button class="btn btn-quiet js-home" type="button">← Regresar al inicio</button></div>';
     var h1 = $rroot.querySelector("h1"); if (h1) h1.focus({ preventScroll: true });
   }
 
@@ -290,6 +290,7 @@
     if (t.classList.contains("js-wa")) { if (window.fbq) try { window.fbq("track", "Contact"); } catch (x) {} if (window.gtag) try { window.gtag("event", "whatsapp_click", { variant: "wa" }); } catch (x) {} return; }
     if (t.classList.contains("js-start")) { S.step = S.step > 0 && S.step <= TOTAL ? S.step : 1; if (S.step > TOTAL) S.step = 1; go(S.step); }
     else if (t.classList.contains("js-back")) go(S.step - 1);
+    else if (t.classList.contains("js-home")) { S = { step: 0, a: {}, goal: "", name: "", wa: "", email: "", ig: "", variant: "" }; go(0); }
     else if (t.classList.contains("js-restart")) { S = { step: 1, a: {}, goal: "", name: S.name, wa: S.wa, email: S.email, ig: S.ig, variant: "" }; go(1); }
     else if (t.classList.contains("opt")) pick(t.dataset.k, t.dataset.v);
   });
